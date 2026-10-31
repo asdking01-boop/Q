@@ -3,6 +3,7 @@ name: Build Android APK
 on:
   workflow_dispatch:
   push:
+    branches: [main, master]
 
 jobs:
   build:
@@ -18,26 +19,16 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Find and extract ZIP
-        run: |
-          ZIP=$(find . -type f -iname "*.zip" -not -path "./.git/*" | head -n 1)
-
-          if [ -z "$ZIP" ]; then
-            echo "ZIP file not found"
-            find . -maxdepth 3 -type f
-            exit 1
-          fi
-
-          mkdir -p project
-          unzip "$ZIP" -d project
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.3.1'
 
       - name: Build APK
-        run: |
-          cd project
-          gradle assembleDebug
+        run: gradle assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: ASD-IPTV-Player-APK
-          path: project/app/build/outputs/apk/debug/*.apk
+          path: app/build/outputs/apk/debug/*.apk
