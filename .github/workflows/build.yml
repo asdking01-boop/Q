@@ -25,6 +25,20 @@ jobs:
 
       - name: Extract project ZIP
         run: |
+          echo "Searching for ZIP files..."
+          find . -type f -iname '*.zip' -not -path './.git/*'
+
+          ZIP=$(find . -type f -iname '*.zip' -not -path './.git/*' | head -n 1)
+
+          if [ -z "$ZIP" ]; then
+            echo "ERROR: No ZIP file found"
+            exit 1
+          fi
+
+          echo "Found ZIP: $ZIP"
+          mkdir -p project
+          unzip "$ZIP" -d project
+        run: |
           ZIP=$(find . -maxdepth 1 -name '*.zip' -type f | head -n 1)
           if [ -z "$ZIP" ]; then
             echo "Project ZIP not found"
