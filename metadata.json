@@ -1,0 +1,6 @@
+{
+  "name": "ASD IPTV Player",
+  "description": "تطبيق مشغل IPTV احترافي وسريع لدخول اشتراكات Xtream Codes وروابط البث المباشر بدون إعلانات وبجودة عالية.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
