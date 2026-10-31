@@ -3,11 +3,11 @@ name: Build Android APK
 on:
   workflow_dispatch:
   push:
-    branches: [main, master]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -18,29 +18,23 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '9.3.1'
-
-            - name: Extract project ZIP
+      - name: Find and extract ZIP
         run: |
-          echo "Searching for ZIP..."
-          find . -type f -iname "*.zip"
-
-          ZIP=$(find . -type f -iname "*.zip" | head -n 1)
+          ZIP=$(find . -type f -iname "*.zip" -not -path "./.git/*" | head -n 1)
 
           if [ -z "$ZIP" ]; then
-            echo "ZIP NOT FOUND"
+            echo "ZIP file not found"
+            find . -maxdepth 3 -type f
             exit 1
           fi
 
           mkdir -p project
           unzip "$ZIP" -d project
-          echo "ZIP extracted successfully"
 
       - name: Build APK
-        run: gradle -p project assembleDebug
+        run: |
+          cd project
+          gradle assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
