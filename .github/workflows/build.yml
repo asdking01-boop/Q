@@ -23,29 +23,21 @@ jobs:
         with:
           gradle-version: '9.3.1'
 
-      - name: Extract project ZIP
+            - name: Extract project ZIP
         run: |
-          echo "Searching for ZIP files..."
-          find . -type f -iname '*.zip' -not -path './.git/*'
+          echo "Searching for ZIP..."
+          find . -type f -iname "*.zip"
 
-          ZIP=$(find . -type f -iname '*.zip' -not -path './.git/*' | head -n 1)
+          ZIP=$(find . -type f -iname "*.zip" | head -n 1)
 
           if [ -z "$ZIP" ]; then
-            echo "ERROR: No ZIP file found"
+            echo "ZIP NOT FOUND"
             exit 1
           fi
 
-          echo "Found ZIP: $ZIP"
           mkdir -p project
           unzip "$ZIP" -d project
-        run: |
-          ZIP=$(find . -maxdepth 1 -name '*.zip' -type f | head -n 1)
-          if [ -z "$ZIP" ]; then
-            echo "Project ZIP not found"
-            exit 1
-          fi
-          mkdir project
-          unzip "$ZIP" -d project
+          echo "ZIP extracted successfully"
 
       - name: Build APK
         run: gradle -p project assembleDebug
